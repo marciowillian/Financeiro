@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
@@ -17,12 +20,14 @@ import br.com.marciowillian.financeiro.service.CadastroLancamentos;
 import br.com.marciowillian.financeiro.service.NegocioException;
 import br.com.marciowillian.financeiro.util.JpaUtil;
 
-public class CadastroLancamentoBean implements Serializable{
+@ManagedBean
+@ViewScoped
+public class CadastroLancamentoBean implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Lancamento lancamento = new Lancamento();
 	private List<Pessoa> todasPessoas;
-	
+
 	public void prepararCadastro() {
 		EntityManager manager = JpaUtil.geEntityManager();
 		try {
@@ -32,7 +37,7 @@ public class CadastroLancamentoBean implements Serializable{
 			manager.close();
 		}
 	}
-	
+
 	public void salvar() {
 		EntityManager manager = JpaUtil.geEntityManager();
 		EntityTransaction trx = manager.getTransaction();
@@ -41,36 +46,39 @@ public class CadastroLancamentoBean implements Serializable{
 			trx.begin();
 			CadastroLancamentos cadastro = new CadastroLancamentos(new Lancamentos(manager));
 			cadastro.salvar(this.lancamento);
-			
+
 			this.lancamento = new Lancamento();
 			context.addMessage(null, new FacesMessage("Lançamento salvo com sucesso"));
 			trx.commit();
 		} catch (NegocioException e) {
 			trx.rollback();
-			
+
 			FacesMessage mensagem = new FacesMessage(e.getMessage());
 			mensagem.setSeverity(FacesMessage.SEVERITY_ERROR);
 			context.addMessage(null, mensagem);
-		}finally {
+		} finally {
 			manager.close();
 		}
 	}
-	
-	public List<Pessoa> getTodasPessoas(){
+
+	public List<Pessoa> getTodasPessoas() {
 		return this.todasPessoas;
 	}
-	
-	public TipoLancamento[] getTipoLancamentos(){
+
+	public TipoLancamento[] getTipoLancamentos() {
 		return TipoLancamento.values();
 	}
-	
+
 	public Lancamento getLancamento() {
 		return lancamento;
 	}
-	
+
 	public void setLancamento(Lancamento lancamento) {
 		this.lancamento = lancamento;
 	}
+
+	public void descricaoModificada(ValueChangeEvent event) {
+		System.out.println("Valor antigo: " + event.getOldValue());
+		System.out.println("Novo valor: " + event.getNewValue());
+	}
 }
-
-

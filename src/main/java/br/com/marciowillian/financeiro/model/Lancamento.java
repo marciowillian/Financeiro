@@ -15,6 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table (name="lancamento")
@@ -38,6 +43,7 @@ public class Lancamento implements Serializable {
 		this.id = id;
 	}
 	
+	@NotNull
 	@ManyToOne(optional=false)
 	@JoinColumn(name="pessoa_id")
 	public Pessoa getPessoa() {
@@ -46,6 +52,9 @@ public class Lancamento implements Serializable {
 	public void setPessoa(Pessoa pessoa) {
 		this.pessoa = pessoa;
 	}
+	
+	@NotEmpty
+	@Size(max = 80)
 	@Column(length=80, nullable=false)
 	public String getDescricao() {
 		return descricao;
@@ -53,6 +62,9 @@ public class Lancamento implements Serializable {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
+	
+	@NotNull
+	@DecimalMin("0")
 	@Column(precision=10, scale=2, nullable=false)
 	public BigDecimal getValor() {
 		return valor;
@@ -60,6 +72,8 @@ public class Lancamento implements Serializable {
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
 	}
+	
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(nullable=false)
 	public TipoLancamento getTipo() {
@@ -68,6 +82,8 @@ public class Lancamento implements Serializable {
 	public void setTipo(TipoLancamento tipo) {
 		this.tipo = tipo;
 	}
+	
+	@NotNull
 	@Temporal(TemporalType.DATE)
 	@Column(name="data_vencimento", nullable=false)
 	public Date getDataVencimento() {
@@ -76,6 +92,8 @@ public class Lancamento implements Serializable {
 	public void setDataVencimento(Date dataVencimento) {
 		this.dataVencimento = dataVencimento;
 	}
+	
+	
 	@Temporal(TemporalType.DATE)
 	@Column(name="data_pagamento", nullable=true)
 	public Date getDataPagamento() {
@@ -140,6 +158,11 @@ public class Lancamento implements Serializable {
 		} else if (!valor.equals(other.valor))
 			return false;
 		return true;
+	}
+	@Override
+	public String toString() {
+		return "Lancamento [id=" + id + ", pessoa=" + pessoa + ", descricao=" + descricao + ", valor=" + valor
+				+ ", tipo=" + tipo + ", dataVencimento=" + dataVencimento + ", dataPagamento=" + dataPagamento + "]";
 	}
 	
 	

@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table (name="pessoa")
@@ -14,18 +17,20 @@ public class Pessoa implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	
-	private long id;
+	private Long id;
 	private String nome;
 	
 	@Id
 	@GeneratedValue
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
+	@NotEmpty
+	@Size(max = 60)
 	@Column(length = 60, nullable = false)
 	public String getNome() {
 		return nome;
@@ -56,5 +61,10 @@ public class Pessoa implements Serializable {
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		return "Pessoa [id=" + id + ", nome=" + nome + "]";
+	}
 		
+	
 }
